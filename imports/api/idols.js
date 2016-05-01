@@ -30,21 +30,20 @@ export const createIdol = new ValidatedMethod({
 		}
 		const userId = this.userId;
 		Idols.insert({
-			surName: surName,
-			givenName: givenName,
-			nickName: nickName,
+			surName,
+			givenName,
+			nickName,
 			createdAt: new Date(),
 			createdBy: userId,
 			modifiedAt: new Date(),
 			lastModifiedBy: userId,
 			fullName: `${surName} ${givenName}`,
 		});
-	}
+	},
 });
 
 Meteor.methods({
 	'idols.remove'(idolId) {
-		check(idolId, String);
 		Idols.remove(idolId);
 	},
 });
