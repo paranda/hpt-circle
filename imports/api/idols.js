@@ -1,30 +1,48 @@
-import { Meteor } from 'meteor/meteor';
-import { Mongo } from 'meteor/mongo';
-import { check } from 'meteor/check';
+import {Meteor} from 'meteor/meteor';
+import {Mongo} from 'meteor/mongo';
+import {ValidatedMethod} from 'meteor/mdg:validated-method';
+import {SimpleSchema} from 'meteor/aldeed:simple-schema';
 
 export const Idols = new Mongo.Collection('idols');
 
-Meteor.methods({
-	'idols.insert'(idolEntity) {
-		check(idolEntity, {
-			surName: Match.Maybe(String),
-			givenName: String,
-			nickName: Match.Maybe(String),
-		});
+Idols.schema = new SimpleSchema({
+	surName: {type: String, optional: true},
+	givenName: {type: String},
+	nickName: {type: String, optional: true},
+	createdAt: {type: Date},
+	createdBy: {type: String},
+	modifiedAt: {type: Date},
+	lastModifiedBy: {type: String},
+	fullName: {type: String},
+});
 
+export const createIdol = new ValidatedMethod({
+	name: 'idols.createIdol',
+	validate: new SimpleSchema({
+		surName: {type: String, optional: true},
+		givenName: {type: String},
+		nickName: {type: String, optional: true},
+	}).validator(),
+	run({ surName, givenName, nickName }) {
 		// Make sure the user is logged in before inserting a idol
 		if (!this.userId) {
-			throw new Meteor.Error('not-authorized');
+			throw new Meteor.Error('Must be logged in to create idols');
 		}
-		const username = Meteor.users.findOne(this.userId).username;
+		const userId = this.userId;
 		Idols.insert({
+			surName: surName,
+			givenName: givenName,
+			nickName: nickName,
 			createdAt: new Date(),
-			createdBy: username,
+			createdBy: userId,
 			modifiedAt: new Date(),
-			lastModifiedBy: username,
-			fullName : `${idolEntity.surName} ${idolEntity.givenName}`,
+			lastModifiedBy: userId,
+			fullName: `${surName} ${givenName}`,
 		});
-	},
+	}
+});
+
+Meteor.methods({
 	'idols.remove'(idolId) {
 		check(idolId, String);
 		Idols.remove(idolId);

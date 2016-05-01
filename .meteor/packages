@@ -23,3 +23,5 @@ react-meteor-data
 msavin:mongol
 accounts-ui
 accounts-twitter
+mdg:validated-method
+aldeed:simple-schema
