@@ -42,8 +42,16 @@ export const createIdol = new ValidatedMethod({
 	},
 });
 
-Meteor.methods({
-	'idols.remove'(idolId) {
+export const removeIdol = new ValidatedMethod({
+	name: 'idols.removeIdol',
+	validate: new SimpleSchema({
+		idolId: {type: String},
+	}).validator(),
+	run({ idolId }) {
+		// Make sure the user is logged in before removing a idol
+		if (!this.userId) {
+			throw new Meteor.Error('Must be logged in to remove idols');
+		}
 		Idols.remove(idolId);
 	},
 });

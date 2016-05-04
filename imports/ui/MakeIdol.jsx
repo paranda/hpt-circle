@@ -59,10 +59,12 @@ export default class MakeIdol extends Component {
 
 	render() {
 		return (
-			<form autoComplete="off"
+			<form
+				autoComplete="off"
 				name="make-idol-search"
 				className="make-idol"
-				onSubmit={this.handleSubmit.bind(this)}>
+				onSubmit={this.handleSubmit.bind(this)}
+			>
 				{this.renderTextInput('surName', 'Last Name')}
 				{this.renderTextInput('givenName', 'First Name')}
 				{this.renderTextInput('nickName', 'Nickname')}
