@@ -24,6 +24,10 @@ export default class MakeIdol extends Component {
 		}, this);
 		this.defaultState = defaultState;
 		this.state = defaultState;
+
+		// bind handler methods to this
+		this.handleChange = this.handleChange.bind(this);
+		this.handleSubmit = this.handleSubmit.bind(this);
 	}
 
 	handleChange(event) {
@@ -58,7 +62,7 @@ export default class MakeIdol extends Component {
 				name={field}
 				value={this.state[field]}
 				floatingLabelText={label}
-				onChange={this.handleChange.bind(this)}
+				onChange={this.handleChange}
 			/>
 		);
 	}
@@ -69,7 +73,7 @@ export default class MakeIdol extends Component {
 				autoComplete="off"
 				name="make-idol-search"
 				className="make-idol"
-				onSubmit={this.handleSubmit.bind(this)}
+				onSubmit={this.handleSubmit}
 			>
 				{this.renderTextInput('surName', 'Last Name')}
 				{this.renderTextInput('givenName', 'First Name')}

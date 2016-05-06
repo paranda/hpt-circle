@@ -1,21 +1,24 @@
 import React, { Component, PropTypes } from 'react';
+import update from 'react-addons-update';
 import { Meteor } from 'meteor/meteor';
 import { createContainer } from 'meteor/react-meteor-data';
 
-//API Related imports
+// API Related imports
 import { Idols } from '../api/idols.js';
 
-//UI Related Imports
+// UI Related Imports
+import AccountsUIWrapper from './AccountsUIWrapper.jsx';
 import Idol from './Idol.jsx';
+import IdolProfile from './IdolProfile.jsx';
 import injectTapEventPlugin from 'react-tap-event-plugin';
 import MakeIdol from './MakeIdol.jsx';
-import AccountsUIWrapper from './AccountsUIWrapper.jsx';
 
-//MaterialUI
+// MaterialUI
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import {List} from 'material-ui/List';
 import Subheader from 'material-ui/Subheader';
+import Drawer from 'material-ui/Drawer';
 
 // Needed for onTouchTap
 // Check this repo:
@@ -25,14 +28,61 @@ injectTapEventPlugin();
 
 // App component - represents the whole app
 class App extends Component {
+	constructor(props) {
+		super(props);
+		this.state = {
+			idolDrawer: {
+				idol: null,
+				isOpen: false,
+			},
+		};
+		// Manually bind handler methods to constructor
+		this.toggleDrawer = this.toggleDrawer.bind(this);
+		this.renderIdolDrawerContents = this.renderIdolDrawerContents.bind(this);
+	}
+
+	onIdolTouchTap(idol) {
+		this.setState({
+			idolDrawer: {
+				idol,
+				isOpen: true,
+			},
+		});
+	}
+
+	toggleDrawer(isOpen) {
+		const newState = update(this.state, {
+			idolDrawer: {
+				isOpen: {$set: isOpen},
+			},
+		});
+		this.setState(newState);
+	}
+
 	renderIdols() {
 		return this.props.idols.map((idol) => (
-			<Idol key={idol._id} idol={idol}/>
+			<Idol
+				key={idol._id}
+				idol={idol}
+				onTouchTap={this.onIdolTouchTap.bind(this, idol)}
+			/>
 		));
 	}
 
-	handleIdolSelect(event){
-		console.log(event);
+	renderIdolDrawerContents({idol}) {
+		if (idol) {
+			return (
+				<IdolProfile
+					key={idol._id}
+					idol={idol}
+				/>
+			);
+		}
+		return (
+			<div className="emptyDrawerMessage">
+				No idol selected
+			</div>
+		);
 	}
 
 	render() {
@@ -44,12 +94,18 @@ class App extends Component {
 						<AccountsUIWrapper />
 						<MakeIdol />
 					</header>
-					<List
-						onTouchTap={this.handleIdolSelect}
-					>
+					<List>
 						<Subheader>Recently Created Idols</Subheader>
 						{this.renderIdols()}
 					</List>
+					<Drawer
+						docked={false}
+						openSecondary
+						open={this.state.idolDrawer.isOpen}
+						onRequestChange={this.toggleDrawer}
+					>
+						{this.renderIdolDrawerContents(this.state.idolDrawer)}
+					</Drawer>
 				</div>
 			</MuiThemeProvider>
 		);
