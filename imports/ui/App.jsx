@@ -1,20 +1,27 @@
 import React, { Component, PropTypes } from 'react';
-import getMuiTheme from 'material-ui/styles/getMuiTheme';
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-
 import { Meteor } from 'meteor/meteor';
 import { createContainer } from 'meteor/react-meteor-data';
 
+//API Related imports
+import { Idols } from '../api/idols.js';
+
+//UI Related Imports
+import Idol from './Idol.jsx';
 import injectTapEventPlugin from 'react-tap-event-plugin';
+import MakeIdol from './MakeIdol.jsx';
+import AccountsUIWrapper from './AccountsUIWrapper.jsx';
+
+//MaterialUI
+import getMuiTheme from 'material-ui/styles/getMuiTheme';
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+import {List} from 'material-ui/List';
+import Subheader from 'material-ui/Subheader';
+
 // Needed for onTouchTap
 // Check this repo:
 // https://github.com/zilverline/react-tap-event-plugin
 injectTapEventPlugin();
 
-import { Idols } from '../api/idols.js';
-import Idol from './Idol.jsx';
-import MakeIdol from './MakeIdol.jsx';
-import AccountsUIWrapper from './AccountsUIWrapper.jsx';
 
 // App component - represents the whole app
 class App extends Component {
@@ -22,6 +29,10 @@ class App extends Component {
 		return this.props.idols.map((idol) => (
 			<Idol key={idol._id} idol={idol}/>
 		));
+	}
+
+	handleIdolSelect(event){
+		console.log(event);
 	}
 
 	render() {
@@ -33,9 +44,12 @@ class App extends Component {
 						<AccountsUIWrapper />
 						<MakeIdol />
 					</header>
-					<ul>
+					<List
+						onTouchTap={this.handleIdolSelect}
+					>
+						<Subheader>Recently Created Idols</Subheader>
 						{this.renderIdols()}
-					</ul>
+					</List>
 				</div>
 			</MuiThemeProvider>
 		);
@@ -47,6 +61,8 @@ App.propTypes = {
 };
 
 export default createContainer(() => {
+	Meteor.subscribe('idols');
+
 	return {
 		idols: Idols.find({}, {sort: {createdAt: -1}}).fetch(),
 		currentUser: Meteor.user(),

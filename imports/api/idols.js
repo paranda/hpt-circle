@@ -5,6 +5,13 @@ import {SimpleSchema} from 'meteor/aldeed:simple-schema';
 
 export const Idols = new Mongo.Collection('idols');
 
+if (Meteor.isServer) {
+	// This code only runs on the server
+	Meteor.publish('idols', function idolsPublication() {
+		return Idols.find();
+	});
+}
+
 Idols.schema = new SimpleSchema({
 	surName: {type: String, optional: true},
 	givenName: {type: String},

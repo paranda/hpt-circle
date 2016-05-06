@@ -47,9 +47,9 @@
   "dependencies": {
     "material-ui": "^0.15.0-beta.2",
     "meteor-node-stubs": "~0.2.0",
-    "react": "^15.0.1",
-    "react-addons-pure-render-mixin": "^15.0.1",
-    "react-dom": "^15.0.1",
+    "react": "^15.0.2",
+    "react-addons-pure-render-mixin": "^15.0.2",
+    "react-dom": "^15.0.2",
     "react-tap-event-plugin": "^1.0.0"
   },
   "devDependencies": {

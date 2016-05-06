@@ -13,13 +13,17 @@ export default class MakeIdol extends Component {
 
 	constructor(props) {
 		super(props);
-		this.state = {};
+		const defaultState = {};
 		// Populate initial fields from the supplied idol object
 		userSuppliedFields.forEach((field) => {
 			if (props.idol.hasOwnProperty(field.name)) {
-				this.state[field.name] = props.idol[field.name];
+				defaultState[field.name] = props.idol[field.name];
+			} else {
+				defaultState[field.name] = field.value;
 			}
 		}, this);
+		this.defaultState = defaultState;
+		this.state = defaultState;
 	}
 
 	handleChange(event) {
@@ -31,7 +35,9 @@ export default class MakeIdol extends Component {
 
 		const idolEntity = {};
 		userSuppliedFields.forEach((field) => {
-			idolEntity[field.name] = this.state[field.name].trim();
+			if (this.state[field.name] !== undefined) {
+				idolEntity[field.name] = this.state[field.name].trim();
+			}
 		}, this);
 
 		// Insert the idol to database
@@ -42,15 +48,15 @@ export default class MakeIdol extends Component {
 				// success!
 			}
 		});
-
 		// Reset form from beginning
-		this.setState(this.getInitialState());
+		this.setState(this.defaultState);
 	}
 
 	renderTextInput(field, label) {
 		return (
 			<TextField
 				name={field}
+				value={this.state[field]}
 				floatingLabelText={label}
 				onChange={this.handleChange.bind(this)}
 			/>
