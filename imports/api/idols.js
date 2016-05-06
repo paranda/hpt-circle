@@ -7,29 +7,25 @@ export const Idols = new Mongo.Collection('idols');
 
 if (Meteor.isServer) {
 	// This code only runs on the server
-	Meteor.publish('idols', function idolsPublication() {
+	Meteor.publish('idols', () => {
 		return Idols.find();
 	});
 }
 
 Idols.schema = new SimpleSchema({
 	surName: {type: String, optional: true},
-	givenName: {type: String},
+	givenName: {type: String, min: 1},
 	nickName: {type: String, optional: true},
 	createdAt: {type: Date},
 	createdBy: {type: String},
 	modifiedAt: {type: Date},
 	lastModifiedBy: {type: String},
-	fullName: {type: String},
+	fullName: {type: String, min: 1},
 });
 
 export const createIdol = new ValidatedMethod({
 	name: 'idols.createIdol',
-	validate: new SimpleSchema({
-		surName: {type: String, optional: true},
-		givenName: {type: String},
-		nickName: {type: String, optional: true},
-	}).validator(),
+	validate: Idols.schema.pick(['surName', 'givenName', 'nickName']).validator(),
 	run({ surName, givenName, nickName }) {
 		// Make sure the user is logged in before inserting a idol
 		if (!this.userId) {
