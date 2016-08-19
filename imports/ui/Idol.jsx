@@ -5,7 +5,7 @@ import FontIcon from 'material-ui/FontIcon';
 
 export default class Idol extends Component {
 	getDisplayName() {
-		return (this.props.idol.nickName) ?
+		return this.props.idol.nickName ?
 			this.props.idol.nickName : this.props.idol.fullName;
 	}
 

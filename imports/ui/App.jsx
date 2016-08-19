@@ -1,10 +1,10 @@
-import React, { Component, PropTypes } from 'react';
+import React, {Component, PropTypes} from 'react';
 import update from 'react-addons-update';
-import { Meteor } from 'meteor/meteor';
-import { createContainer } from 'meteor/react-meteor-data';
+import {Meteor} from 'meteor/meteor';
+import {createContainer} from 'meteor/react-meteor-data';
 
 // API Related imports
-import { Idols } from '../api/idols.js';
+import {Idols} from '../api/idols.js';
 
 // UI Related Imports
 import AccountsUIWrapper from './AccountsUIWrapper.jsx';
@@ -38,7 +38,7 @@ class App extends Component {
 		};
 		// Manually bind handler methods to constructor
 		this.toggleDrawer = this.toggleDrawer.bind(this);
-		this.renderIdolDrawerContents = this.renderIdolDrawerContents.bind(this);
+		App.renderIdolDrawerContents = App.renderIdolDrawerContents.bind(this);
 	}
 
 	onIdolTouchTap(idol) {
@@ -69,7 +69,7 @@ class App extends Component {
 		));
 	}
 
-	renderIdolDrawerContents({idol}) {
+	static renderIdolDrawerContents({idol}) {
 		if (idol) {
 			return (
 				<IdolProfile
@@ -104,7 +104,7 @@ class App extends Component {
 						open={this.state.idolDrawer.isOpen}
 						onRequestChange={this.toggleDrawer}
 					>
-						{this.renderIdolDrawerContents(this.state.idolDrawer)}
+						{App.renderIdolDrawerContents(this.state.idolDrawer)}
 					</Drawer>
 				</div>
 			</MuiThemeProvider>
